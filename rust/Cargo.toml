@@ -1,0 +1,8 @@
+[package]
+name = "linda-server"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "servidor-linda"
+path = "src/main.rs"
