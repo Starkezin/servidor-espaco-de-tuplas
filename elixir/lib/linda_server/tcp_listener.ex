@@ -44,7 +44,7 @@ defmodule LindaServer.TcpListener do
       {:ok, data} ->
         command = String.trim(data)
         Logger.info("Comando recebido: #{inspect(command)}")
-        
+
         try do
           response = process_command(command)
           Logger.info("Resposta: #{inspect(response)}")
@@ -54,7 +54,7 @@ defmodule LindaServer.TcpListener do
             Logger.error("Erro ao processar comando: #{inspect(e)}")
             :gen_tcp.send(socket, "ERROR\n")
         end
-        
+
         handle_client(socket) # Loop para manter conexão viva
       {:error, :closed} ->
         Logger.info("Cliente desconectado")
@@ -71,8 +71,6 @@ defmodule LindaServer.TcpListener do
     parts = String.split(line, " ", parts: 4)
 
     case parts do
-      # CORREÇÃO DOS WARNINGS: Usamos _k e _v para indicar que vamos ignorá-los aqui
-      # para processar corretamente logo abaixo (caso o valor tenha espaços).
       ["WR", _k, _v] ->
         [_cmd, key | val_parts] = String.split(line, " ")
         value = Enum.join(val_parts, " ")

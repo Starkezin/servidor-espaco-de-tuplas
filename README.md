@@ -2,6 +2,12 @@
 
 Implementação de um servidor concorrente de **Espaço de Tuplas** (Tuple Space) inspirado no modelo **Linda**, desenvolvido em múltiplas linguagens de programação como projeto educacional.
 
+Participantes do grupo:
+- Lucas Ludwig
+- Samuel Starke
+- Sandro Júnior 
+- Vítor COlombo
+
 ---
 
 ## Estrutura do Projeto

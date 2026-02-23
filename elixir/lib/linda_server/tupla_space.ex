@@ -67,7 +67,6 @@ defmodule LindaServer.TupleSpace do
     end
   end
 
-  # --- Lógica Privada (Core) ---
 
   # Encontra a primeira tupla compatível (FIFO)
   defp find_tuple(tuples, key) do
@@ -90,7 +89,6 @@ defmodule LindaServer.TupleSpace do
 
   # Lógica principal de Matching: Chegou uma tupla, quem quer ela?
   defp match_tuple_to_waiters({key, value} = tuple, state) do
-    # Filtra waiters que querem essa chave
     {matches, remaining_waiters} = Enum.split_with(state.waiters, fn {_, k, _} -> k == key end)
 
     # Processa os waiters em ordem FIFO
@@ -113,12 +111,8 @@ defmodule LindaServer.TupleSpace do
         end
       end)
 
-    # Reconstrói a lista de waiters (mantendo a ordem original dos que não foram atendidos)
-    # Nota: para simplificar, colocamos os 'remaining' (outras chaves) + os que sobraram dessa chave
-    # Uma implementação O(1) usaria :queue, mas List é aceitável aqui.
     new_waiters_list = remaining_waiters ++ final_waiters
 
-    # Se a tupla sobrou (ninguém quis ou só teve RD), guarda ela.
     new_tuples_list = if remaining_tuple, do: state.tuples ++ [tuple], else: state.tuples
 
     %{state | tuples: new_tuples_list, waiters: new_waiters_list}
