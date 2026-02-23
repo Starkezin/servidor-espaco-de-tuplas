@@ -42,12 +42,25 @@ defmodule LindaServer.TcpListener do
   defp handle_client(socket) do
     case :gen_tcp.recv(socket, 0) do
       {:ok, data} ->
-        response = process_command(String.trim(data))
-        :gen_tcp.send(socket, response <> "\n")
+        command = String.trim(data)
+        Logger.info("Comando recebido: #{inspect(command)}")
+        
+        try do
+          response = process_command(command)
+          Logger.info("Resposta: #{inspect(response)}")
+          :gen_tcp.send(socket, response <> "\n")
+        rescue
+          e ->
+            Logger.error("Erro ao processar comando: #{inspect(e)}")
+            :gen_tcp.send(socket, "ERROR\n")
+        end
+        
         handle_client(socket) # Loop para manter conexão viva
       {:error, :closed} ->
+        Logger.info("Cliente desconectado")
         :ok
-      {:error, _} ->
+      {:error, reason} ->
+        Logger.error("Erro na conexão: #{inspect(reason)}")
         :ok
     end
   end
